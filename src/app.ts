@@ -6,7 +6,7 @@ import express, { Request, Response, Express } from "express";
 interface Customer {
 	id: number;
 	name: string;
-	status: "GOLD" | "SILVER" | "BRONZE";
+	status: "GOLD" | "SILVER" | "BRONZE" | "PLATINUM";
 	points: number;
 	lastPurchaseDate: string;
 	email?: string;
@@ -82,9 +82,15 @@ app.post("/api/customers/:id/purchase", (req: Request, res: Response): void => {
 	customer.points += Math.floor(purchaseAmount / 10);
 	customer.lastPurchaseDate = new Date().toISOString();
 
-	if (customer.points >= 750) {
+    if(customer.points >= 1000){
+        customer.status = "PLATINUM"
+        customer.lastStatusChange = new Date().toISOString();
+    }
+	else if (customer.points >= 750) {
 		customer.status = "GOLD";
 		customer.lastStatusChange = new Date().toISOString();
+        customer.points += Math.floor((purchaseAmount / 10) + (purchaseAmount * .20))
+
 	} else if (customer.points >= 500) {
 		customer.status = "SILVER";
 		customer.lastStatusChange = new Date().toISOString();
