@@ -82,6 +82,14 @@ app.post("/api/customers/:id/purchase", (req: Request, res: Response): void => {
 	customer.points += Math.floor(purchaseAmount / 10);
 	customer.lastPurchaseDate = new Date().toISOString();
 
+
+    if (customer.status === "PLATINUM"){
+        customer.points += Math.floor((purchaseAmount / 10) + (purchaseAmount * .20))
+    } 
+    else if(customer.status === "GOLD"){
+        customer.points += Math.floor((purchaseAmount / 10) + (purchaseAmount * .12))
+    }
+    
     if(customer.points >= 1000){
         customer.status = "PLATINUM"
         customer.lastStatusChange = new Date().toISOString();
@@ -89,7 +97,6 @@ app.post("/api/customers/:id/purchase", (req: Request, res: Response): void => {
 	else if (customer.points >= 750) {
 		customer.status = "GOLD";
 		customer.lastStatusChange = new Date().toISOString();
-        customer.points += Math.floor((purchaseAmount / 10) + (purchaseAmount * .20))
 
 	} else if (customer.points >= 500) {
 		customer.status = "SILVER";
